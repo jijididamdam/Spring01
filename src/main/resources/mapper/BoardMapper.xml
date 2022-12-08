@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.human.dao.IF_boardDAO">
+<!-- <select>, <delete> 이런식으로 하면 됨  ~ DAO -->
+<!-- insert into MEMBER_TBL_02 values(?,?,?,?,?,?,?) -->
+	<insert id="insertOne" parameterType="com.human.vo.BoardVO"> 
+	
+	insert into bb values (bb_cnt.nextval,#{name},#{email},#{title},#{content},#{pass},default,default)
+		
+	</insert>
+	<!-- 쿼리문, 파라미터, 리턴값 >> 조금 더 깊이 자료형이 무엇인가? 파라미터는 객체? String? Integer?
+		 리턴값은 단일 객체인가, String? Integer? List -->
+	
+	<select id="selectAll" resultType="com.human.vo.BoardVO">
+		select t.* from (select sub.*, rownum as rnum from (select * from bb order by num desc) sub) t
+		where rnum between #{startNo} and #{endNo}
+	</select>
+	
+	<select id="countBoard" resultType="int">
+		select count(*) from bb
+	</select>
+	
+	<insert id="board_attach" parameterType="String">
+		insert into board_attach values ((select max(num) from bb),#{filename},default)
+	</insert>
+
+		<select id="selectOne" resultType="com.human.vo.BoardVO" >
+		select * from bb where num=#{vno}
+	</select>
+	
+	<select id="selectAttach" resultType="String">
+		select fname from board_attach where num=#{vno}
+	</select>
+	
+	<update id="boardUpdate">
+		update bb set pass=#{pass}, email=#{email}, title=#{title}, content=#{content} where num=#{num}
+	</update>
+
+</mapper>
